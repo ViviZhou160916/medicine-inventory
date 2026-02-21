@@ -77,6 +77,7 @@ export function formatExpiryAlertMessage(
     message += '暂无即将过期的药品';
   } else {
     medicines.forEach((m, index) => {
+      if (!m.expiryDate) return;
       const daysUntilExpiry = Math.ceil(
         (new Date(m.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
       );
