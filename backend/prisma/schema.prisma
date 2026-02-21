@@ -16,7 +16,7 @@ model User {
   username       String   @unique
   password       String
   name           String
-  role           Role     @default(USER)
+  role           String   @default("USER")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -25,11 +25,6 @@ model User {
   operationLogs   OperationLog[]
 
   @@map("users")
-}
-
-enum Role {
-  ADMIN
-  USER
 }
 
 // 药品表
@@ -94,22 +89,16 @@ model OutboundRecord {
 
 // 过期提醒记录
 model ExpiryAlert {
-  id         String       @id @default(uuid())
+  id         String   @id @default(uuid())
   medicineId String
   alertDate  DateTime
-  status     AlertStatus  @default(PENDING)
-  notified   Boolean      @default(false)
-  createdAt  DateTime     @default(now())
+  status     String   @default("PENDING")
+  notified   Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   medicine Medicine @relation(fields: [medicineId], references: [id])
 
   @@map("expiry_alerts")
-}
-
-enum AlertStatus {
-  PENDING
-  RESOLVED
-  IGNORED
 }
 
 // 操作日志
