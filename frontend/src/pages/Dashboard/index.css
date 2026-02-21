@@ -1,0 +1,13 @@
+.dashboard {
+  padding: 0;
+}
+
+.ant-statistic-title {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.ant-statistic-content {
+  font-size: 24px;
+  font-weight: 600;
+}

@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id             String   @id @default(uuid())
+  username       String   @unique
+  password       String
+  name           String
+  role           Role     @default(USER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  inboundRecords  InboundRecord[]
+  outboundRecords OutboundRecord[]
+  operationLogs   OperationLog[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+// 药品表
+model Medicine {
+  id             String   @id @default(uuid())
+  name           String
+  specification  String?
+  category       String?
+  barcode        String?  @unique
+  manufacturer   String?
+  productionDate DateTime?
+  expiryDate     DateTime?
+  stock          Int      @default(0)
+  unit           String?  @default("盒")
+  minStock       Int      @default(10)
+  location       String?
+  deletedAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  inboundRecords  InboundRecord[]
+  outboundRecords OutboundRecord[]
+  expiryAlerts    ExpiryAlert[]
+
+  @@map("medicines")
+}
+
+// 入库记录表
+model InboundRecord {
+  id             String   @id @default(uuid())
+  medicineId     String
+  quantity       Int
+  batchNumber    String?
+  productionDate DateTime?
+  expiryDate     DateTime?
+  supplier       String?
+  operatorId     String
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  medicine Medicine @relation(fields: [medicineId], references: [id])
+  operator User     @relation(fields: [operatorId], references: [id])
+
+  @@map("inbound_records")
+}
+
+// 出库记录表
+model OutboundRecord {
+  id         String   @id @default(uuid())
+  medicineId String
+  quantity   Int
+  reason     String?
+  operatorId String
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  medicine Medicine @relation(fields: [medicineId], references: [id])
+  operator User     @relation(fields: [operatorId], references: [id])
+
+  @@map("outbound_records")
+}
+
+// 过期提醒记录
+model ExpiryAlert {
+  id         String       @id @default(uuid())
+  medicineId String
+  alertDate  DateTime
+  status     AlertStatus  @default(PENDING)
+  notified   Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+
+  medicine Medicine @relation(fields: [medicineId], references: [id])
+
+  @@map("expiry_alerts")
+}
+
+enum AlertStatus {
+  PENDING
+  RESOLVED
+  IGNORED
+}
+
+// 操作日志
+model OperationLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  details   Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("operation_logs")
+}
