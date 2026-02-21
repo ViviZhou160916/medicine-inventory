@@ -8,9 +8,11 @@ import {
   LogoutOutlined,
   BellOutlined,
   UserOutlined,
+  MenuOutlined,
 } from '@ant-design/icons'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
+import { useState } from 'react'
 import './MainLayout.css'
 
 const { Header, Sider, Content } = Layout
@@ -20,6 +22,7 @@ export default function MainLayout() {
   const location = useLocation()
   const user = useAuthStore(state => state.user)
   const logout = useAuthStore(state => state.logout)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const menuItems = [
     { key: '/', icon: <HomeOutlined />, label: '仪表盘' },
@@ -31,6 +34,7 @@ export default function MainLayout() {
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key)
+    setMobileMenuOpen(false)
   }
 
   const handleLogout = () => {
@@ -49,7 +53,15 @@ export default function MainLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider theme="light" width={240} className="main-sider">
+      {mobileMenuOpen && (
+        <div className="mobile-overlay" onClick={() => setMobileMenuOpen(false)} />
+      )}
+      <Sider
+        theme="light"
+        width={240}
+        className={`main-sider ${mobileMenuOpen ? 'mobile-open' : ''}`}
+        style={{ display: 'block' }}
+      >
         <div className="logo">
           <MedicineBoxOutlined style={{ fontSize: 24, color: '#1890ff' }} />
           <span className="logo-text">药品库存系统</span>
@@ -63,7 +75,11 @@ export default function MainLayout() {
       </Sider>
       <Layout>
         <Header className="main-header">
-          <div className="header-left">
+          <div className="header-left" style={{ display: 'flex', alignItems: 'center' }}>
+            <MenuOutlined
+              className="menu-trigger"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            />
             <h2>药品储藏仓库管理系统</h2>
           </div>
           <div className="header-right">
