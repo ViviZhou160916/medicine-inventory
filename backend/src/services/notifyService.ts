@@ -69,7 +69,7 @@ export async function sendEmailNotification(
  * Format expiry alert message
  */
 export function formatExpiryAlertMessage(
-  medicines: Array<{ name: string; expiryDate: Date; stock: number }>
+  medicines: Array<{ name: string; expiryDate: Date | null; stock: number }>
 ): string {
   let message = '### 药品过期提醒\n\n';
 

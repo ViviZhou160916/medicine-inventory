@@ -23,6 +23,7 @@ async function checkExpiringMedicines() {
       where: {
         deletedAt: null,
         expiryDate: {
+          not: null,
           lte: thirtyDaysLater,
         },
       },

@@ -63,7 +63,7 @@ export const getMedicineById = async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
 
     const medicine = await prisma.medicine.findFirst({
-      where: { id, deletedAt: null },
+      where: { id: id as string, deletedAt: null },
     });
 
     if (!medicine) {
@@ -107,7 +107,7 @@ export const updateMedicine = async (req: AuthRequest, res: Response) => {
     const data = req.body;
 
     const medicine = await prisma.medicine.update({
-      where: { id },
+      where: { id: id as string },
       data,
     });
 
@@ -132,7 +132,7 @@ export const deleteMedicine = async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
 
     await prisma.medicine.update({
-      where: { id },
+      where: { id: id as string },
       data: { deletedAt: new Date() },
     });
 
@@ -236,7 +236,7 @@ export const searchByBarcode = async (req: AuthRequest, res: Response) => {
     const { barcode } = req.params;
 
     let medicine = await prisma.medicine.findFirst({
-      where: { barcode, deletedAt: null },
+      where: { barcode: barcode as string, deletedAt: null },
     });
 
     // If not found in database, try external API

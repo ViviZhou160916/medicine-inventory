@@ -143,8 +143,8 @@ export const getInboundRecords = async (req: AuthRequest, res: Response) => {
 
     if (startDate || endDate) {
       where.createdAt = {};
-      if (startDate) where.createdAt.gte = new Date(startDate);
-      if (endDate) where.createdAt.lte = new Date(endDate);
+      if (startDate) where.createdAt.gte = new Date(startDate as string);
+      if (endDate) where.createdAt.lte = new Date(endDate as string);
     }
 
     const [records, total] = await Promise.all([
@@ -198,8 +198,8 @@ export const getOutboundRecords = async (req: AuthRequest, res: Response) => {
 
     if (startDate || endDate) {
       where.createdAt = {};
-      if (startDate) where.createdAt.gte = new Date(startDate);
-      if (endDate) where.createdAt.lte = new Date(endDate);
+      if (startDate) where.createdAt.gte = new Date(startDate as string);
+      if (endDate) where.createdAt.lte = new Date(endDate as string);
     }
 
     const [records, total] = await Promise.all([
